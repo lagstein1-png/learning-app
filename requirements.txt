@@ -1,0 +1,8 @@
+# Runtime
+anthropic>=1.6,<2          # Claude API (Messages, structured outputs, refusal fallbacks)
+claude-agent-sdk>=0.2.153  # Claude Agent SDK: the learning coach harness (bundles the CLI)
+mcp>=2.2,<3                # Model Context Protocol: MCPServer (successor of FastMCP) + stdio client
+pydantic>=2.11,<3          # Schemas shared by all three pillars
+
+# Development
+pytest>=8

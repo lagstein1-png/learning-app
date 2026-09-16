@@ -1,0 +1,52 @@
+{
+  "name": "learning-app-tts",
+  "version": "1.0.0",
+  "description": "Multilingual, accessibility-first Text-to-Speech orchestration backend (Hebrew, Arabic, Russian, English) for learners with dyslexia and ADHD.",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "start": "node dist/server.js",
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "check": "npm run typecheck && npm run lint && npm run test",
+    "docker:build": "docker build -t learning-app-tts:local .",
+    "docker:run": "docker run --rm -p 8080:8080 --env-file .env learning-app-tts:local"
+  },
+  "dependencies": {
+    "@google/genai": "2.22.0",
+    "@supabase/supabase-js": "2.116.0",
+    "cors": "2.8.6",
+    "dotenv": "17.4.2",
+    "express": "4.22.3",
+    "helmet": "8.3.0",
+    "morgan": "1.12.1",
+    "winston": "3.19.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@types/cors": "2.8.19",
+    "@types/express": "4.17.25",
+    "@types/morgan": "1.9.10",
+    "@types/node": "20.19.43",
+    "@types/supertest": "7.2.1",
+    "@vitest/coverage-v8": "3.2.7",
+    "eslint": "9.39.5",
+    "supertest": "7.2.2",
+    "tsx": "4.23.13",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.70.0",
+    "vitest": "3.2.7"
+  }
+}

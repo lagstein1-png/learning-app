@@ -88,6 +88,34 @@ tests/                               offline suite (fake HTTP API, in-memory MCP
 client can show a small "simplified by the local engine" notice when the model
 was unreachable, and the learner still hears the text.
 
+## Decision: this is the learning-app stack (2026-09-16)
+
+The repository also carries `claude/accessible-ai-learning-backend-6luk45`, a
+Node/TypeScript service from an earlier session. The Python backend on this
+branch is the product: it is the stack the owner specified in full, it is the
+only one exercised end to end against the live model, and it carries the three
+pillars (Claude API, Claude Agent SDK, MCP). The TypeScript branch stays as a
+reference and receives no further work. Making this branch the default is one
+setting in GitHub (Settings → Branches → Default branch).
+
+## `speech` or `ssml`: the client decides per engine
+
+Every segment carries both a plain `speech` text and an `ssml` fragment. Not
+every engine understands SSML, and one that does not will read the tags aloud,
+which is exactly the failure the server-side sanitiser exists to prevent. Rule
+for the mobile client:
+
+| Engine | Send |
+|---|---|
+| Web Speech API in a browser | `speech` (SSML is ignored or spoken) |
+| Android `TextToSpeech` | `speech` |
+| iOS `AVSpeechSynthesizer`, iOS 16 or later | `ssml` via `AVSpeechUtterance(ssmlRepresentation:)`, `speech` on older iOS |
+| Cloud voices (Azure, Google, Polly) | `ssml_document` |
+
+Verify on the real device before enabling `ssml` for an engine; when in doubt,
+`speech` is always safe. The `pause_after_ms` value lets a client that sends
+`speech` still insert the sentence pause itself.
+
 ## Guarantees
 
 * **The learner always hears something.** Every model or network failure in
@@ -114,6 +142,12 @@ was unreachable, and the learner still hears the text.
 | Coach session (4 turns) | tools used: get_reading_position, simplify_sentence, ask_check_question, note_word_explained, record_check_result, mark_sentence_done |
 | Coach cost | $0.2950 for the four coach turns (reported by the Agent SDK) |
 | Wall time | 98.8 s end to end |
+| Same lesson, `COACH_EFFORT=low` | per-turn $0.0459 / $0.0651 / $0.0802 / $0.1028, total $0.2940 (medium: $0.0455 / $0.0644 / $0.0816 / $0.1035, total $0.2950) |
+
+The `low` versus `medium` comparison shows that effort is not what drives the
+coach's cost: the curve is identical, and it rises with the conversation
+because every turn resends the growing history. The lever, when it is needed,
+is context size (clearing old tool results), not effort. Effort stays `medium`.
 
 ## Mobile deployment shape
 

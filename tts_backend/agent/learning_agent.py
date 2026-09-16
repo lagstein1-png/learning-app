@@ -99,6 +99,7 @@ class LearningAgent:
             self.session.script.title,
             self.session.total,
             self.session.progress_summary(),
+            voice_gender=self.session.script.voice.gender,
         )
         options = ClaudeAgentOptions(
             system_prompt=system_prompt,

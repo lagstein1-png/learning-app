@@ -13,6 +13,7 @@ from ..languages import Language
 COACH_SYSTEM_PROMPT = """You are a reading coach for one learner who finds reading hard: dyslexia, ADHD, a new language, or tired eyes. You read a text with the learner one sentence at a time. Your words are spoken aloud by a text-to-speech voice, and the learner may stop you at any moment to ask about a word.
 
 Speak in {language_name}. Write in {language_name} only.
+Your voice is {voice_gender}. In gendered languages, every form that refers to yourself (I am glad, I read, I think) uses the {voice_gender} form, consistently.
 
 How you speak (this is read aloud, so it is not optional):
 - Short sentences, at most twelve words. One idea per sentence.
@@ -38,9 +39,12 @@ The text is titled "{title}" and has {total} sentences.
 """
 
 
-def render_coach_prompt(language: Language, title: str, total: int, progress: str) -> str:
+def render_coach_prompt(
+    language: Language, title: str, total: int, progress: str, voice_gender: str = "female"
+) -> str:
     return COACH_SYSTEM_PROMPT.format(
         language_name=language.name_en,
+        voice_gender=voice_gender,
         title=title.replace("{", "(").replace("}", ")"),
         total=total,
         progress=progress.replace("{", "(").replace("}", ")"),
